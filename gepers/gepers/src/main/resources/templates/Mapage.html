@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymleaf.org">
+
+<head>
+
+    <meta charset="utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <meta name="description" content=""/>
+
+    <meta name="author" content=""/>
+
+    <title> Ma page </title>
+    <link   rel="stylesheet" type="text/css" href="css/css_sidebar.css" />
+   
+    </head>
+    <style></style>
+  
+   
+<body>
+<nav id="slide-menu">
+    <ul>
+      <li class="timeline"><i class="fa fa-home" aria-hidden="true"></i> Accueil</li>
+      <li class="events"><i class="fa fa-info-circle" aria-hidden="true"></i> Mon Profil</li>
+      <li class="events"><i class="fa fa-info-circle" aria-hidden="true"></i> Mes congés</li>
+            <li class="calendar"><i class="fa fa-calendar-o" aria-hidden="true"></i> Mes Bulletins</li>
+      <li class="sep settings"><i class="fa fa-picture-o" aria-hidden="true"></i> Edition Etat de Paie</li>
+      <li class="logout"><i class="fa fa-pencil-square-o" aria-hidden="true"></i> Gestion des Employés</li>
+      <li class="logout"><i class="fa fa-pencil-square-o" aria-hidden="true"></i> Autres Paramètres</li>
+      <li class="logout"><i class="fa fa-pencil-square-o" aria-hidden="true"></i> Demandes des Congés</li>
+    </ul>
+  </nav>
+  <!-- Contenu de la page -->
+  <div id="content">
+    <div class="menu-trigger"><i class="fa fa-bars" aria-hidden="true"></i></div>
+    <h1>Bienvenue dans l'application GEPERS</h1>
+    <p>Lorem ipsum moi puramet, consectetur adipisicing elit. Fugit consectetur modi omnis aut illo, officiis numquam rerum. Doloribus dignissimos quo quis, vero cumque provident quae officia error, unde ducimus reiciendis!</p>
+      <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Fugit consectetur modi omnis aut illo, officiis numquam rerum. Doloribus dignissimos quo quis, vero cumque provident quae officia error, unde ducimus reiciendis!</p>
+      <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Fugit consectetur modi omnis aut illo, officiis numquam rerum. Doloribus dignissimos quo quis, vero cumque provident quae officia error, unde ducimus reiciendis!</p>
+  </div>
+  
+<script>
+(function() {
+  var $body = document.body
+  , $menu_trigger = $body.getElementsByClassName('menu-trigger')[0];
+  if ( typeof $menu_trigger !== 'undefined' ) {
+    $menu_trigger.addEventListener('click', function() {
+      $body.className = ( $body.className == 'menu-active' )? '' : 'menu-active';
+    });
+  }
+})();
+</script>
+</body>
+</html>
