@@ -67,7 +67,7 @@ public class ManagerController {
 		model.addAttribute("employee", e);
 		return "formNewEmployee";
 	}
-	//mis à jour d'un employée
+	//mis à jour d'un employée3
 	@GetMapping("/updateEmployee/{id}")
 	public String updateEmployee(@PathVariable("id") final int id, Model model) {
 		Employee e = service.getEmployee(id);		
