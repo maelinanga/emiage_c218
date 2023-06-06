@@ -33,6 +33,10 @@ public class RequestsLeavesService {
 		return demandecongeProxy.getMyRequestPendding(emp, statut);
 	}
 	
+	public Iterable <RequestsLeaves> getMyPendingAnnualRequests(final int emp,int type_conge, int statut, int annee){
+		return demandecongeProxy.getMyAnnualRequestPendding(emp, type_conge, statut, annee);
+	}
+	
 	public Iterable <RequestsLeaves> getPendingRequests(final int statut){
 		return demandecongeProxy.getRequestsPenddings(statut);
 	}

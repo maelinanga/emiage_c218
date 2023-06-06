@@ -1,9 +1,12 @@
 package com.websevice.gepers.controller;
 
-import java.text.ParseException;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+
+import java.time.DayOfWeek;
+import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
+import java.util.Calendar;
+import java.util.Iterator;
+
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -20,16 +23,19 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.websevice.gepers.modele.Employee;
-
+import com.websevice.gepers.modele.Leaves;
 import com.websevice.gepers.modele.RequestsLeaves;
 import com.websevice.gepers.service.EmployeeService;
+import com.websevice.gepers.service.LeavesService;
 import com.websevice.gepers.service.PaieService;
 import com.websevice.gepers.service.RequestsLeavesService;
 
 import lombok.Data;
+
 
 
 
@@ -43,6 +49,9 @@ public class EmployeeController {
 	
 	@Autowired
 	private RequestsLeavesService requestservice;
+	
+	@Autowired
+	private LeavesService leaves;
 	
 	@Autowired
 	private PaieService payrollservice;
@@ -91,7 +100,7 @@ public class EmployeeController {
 	
 	
 	@GetMapping("/monprofil")
-	public String createRequest(HttpServletRequest httpServletRequest, Model model) {
+	public String monprofil(HttpServletRequest httpServletRequest, Model model) {
 		String username = log.getLogedUser(httpServletRequest);
 		model.addAttribute("username",username);
 		Employee profil=service.getEmployeeByUsername(username);
@@ -102,16 +111,91 @@ public class EmployeeController {
 	
 	
 	@GetMapping("/createRequest")
-	public String createRequest(Model model) {
+	public String createRequest(HttpServletRequest httpServletRequest,Model model) {
+		String username = log.getLogedUser(httpServletRequest);
+		model.addAttribute("username",username);
+		Employee emp=service.getEmployeeByUsername(username);
+		model.addAttribute("id_employee",emp.getId());
+		
 		RequestsLeaves p = new RequestsLeaves();
 		model.addAttribute("request", p);
+		Iterable <Leaves> typeconges=leaves.getLeaves();
+		model.addAttribute("typeconges",typeconges);
+		
+		/*
+		 * recherche demandes congés annuels encours 
+		 */
+		LocalDate currentdate = LocalDate.now();
+		int annee_encours  = currentdate.getYear();		//c.get(Calendar.YEAR);
+		 model.addAttribute("annee_encours",annee_encours);
+		Iterable<RequestsLeaves> demandes_encours = requestservice.getMyPendingAnnualRequests(emp.getId(), 1, 0,annee_encours);
+		
+		Iterator<RequestsLeaves> iterator = demandes_encours.iterator();
+		if (iterator.hasNext()) {
+			// Iterable has at least one element
+			 int conge_annuel=1;
+			  model.addAttribute("conge_annuel",conge_annuel);
+		 }
+		else {
+			    	int conge_annuel=0;
+			         model.addAttribute("conge_annuel",conge_annuel);
+			    }
+			    
+		/*
+		 * // recherche de la dernière demande de congé annuel validé///////////
+		 */
+		Iterable<RequestsLeaves> demandes_valides= requestservice.getMyPendingAnnualRequests(emp.getId(), 1, 1,annee_encours);
+		Iterator<RequestsLeaves> iterator_solde = demandes_valides.iterator();
+		if (iterator_solde.hasNext()) {
+			    	 
+			int maxId = Integer.MIN_VALUE; // Initialisation de l'ID temporaire à la plus petite valeur possible
+			for (RequestsLeaves e : demandes_valides) { // Parcourir l'itération d'objets "RequestLeaves"
+				if (e.getId() > maxId) { // Vérifier si l'ID de la demande actuelle est plus grand que l'ID temporaire
+					maxId = e.getId(); // Si c'est le cas, mettre à jour l'ID temporaire avec la valeur actuelle
+				}
+			}
+			    	
+			//récupérer la valeur du solde de la dernière demande de congé annuel
+			RequestsLeaves lastrequest=requestservice.getRequest(maxId);
+			int solde_annuel = lastrequest.getSolde();
+			model.addAttribute("solde_annuel",solde_annuel);
+			    		    	
+		}
+		else {
+			int solde_annuel = 26;
+			model.addAttribute("solde_annuel",solde_annuel);
+		}
+		//////////////////////////////////////////////////////////////////
+		/*
+		 * verification existence demandes congé maternité en cours
+		 */
+		
+		Iterable<RequestsLeaves> conge_maternite_encours= requestservice.getMyPendingAnnualRequests(emp.getId(), 2, 0,annee_encours);
+		Iterator<RequestsLeaves> recher = conge_maternite_encours.iterator();
+		if (recher.hasNext()) {
+			// Iterable has at least one element
+			int conge_maternite=1;
+			model.addAttribute("conge_maternite",conge_maternite);  
+			         		      	         
+		}
+		else
+		//aucune demande maternité encours	 
+		{
+			int conge_maternite=0;
+			model.addAttribute("conge_maternite",conge_maternite); 
+		}
+				
+		
+			    
 		return "formdemande_conge";
 	}
 	
 	@PutMapping("/updateRequest/{id}")
 	public String updateRequest(@PathVariable("id") final int id, Model model) {
 		RequestsLeaves p = requestservice.getRequest(id);		
-		model.addAttribute("request", p);	
+		model.addAttribute("request", p);
+		
+		
 		return "formUpdateRequest";		
 	}
 	
@@ -122,10 +206,11 @@ public class EmployeeController {
 	}
 	
 	@PostMapping("/saveRequest")
-	public ModelAndView savePrime(@ModelAttribute RequestsLeaves request) {
-		
+	public ModelAndView saveRequest(@ModelAttribute RequestsLeaves request) {
 		requestservice.saveRequest(request);
-		return new ModelAndView("redirect:/");	
+	    		
+		 return new ModelAndView("redirect:/monprofil");		
+			
 	}
 	
 	

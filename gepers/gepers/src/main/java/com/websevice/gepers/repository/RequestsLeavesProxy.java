@@ -1,6 +1,6 @@
 package com.websevice.gepers.repository;
 
-import java.util.List;
+
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.ParameterizedTypeReference;
@@ -114,7 +114,7 @@ public class RequestsLeavesProxy {
 			return response.getBody();
 		}
 	/*
-	 * mes demandes en cours
+	 * mes demandes  en cours 
 	 */
 		public Iterable<RequestsLeaves> getMyRequestPendding(int em, int statut) {
 			String baseApiUrl = props.getApiUrl();
@@ -132,6 +132,29 @@ public class RequestsLeavesProxy {
 			
 			return response.getBody();
 		}
+		/*
+		 * demandes annuels en cours
+		 */
+		public Iterable<RequestsLeaves> getMyAnnualRequestPendding(int em,int type_conge, int statut, int annee) {
+			String baseApiUrl = props.getApiUrl();
+			String getRequestUrl = baseApiUrl + "mesdemandescongesAnnuelsencours/" + em + "/"+ type_conge + "/" + statut + "/" + annee;
+			
+			RestTemplate restTemplate = new RestTemplate();
+			ResponseEntity<Iterable<RequestsLeaves>> response = restTemplate.exchange(
+					 getRequestUrl, 
+				      HttpMethod.GET, 
+				       null,
+				       new ParameterizedTypeReference<Iterable<RequestsLeaves>>() {}
+				);
+			
+			log.debug("Get requests call " + response.getStatusCode().toString());
+			
+			return response.getBody();
+		}
+		
+		
+		
+		
 		
 		/*
 		 * toutes les demandes en cours

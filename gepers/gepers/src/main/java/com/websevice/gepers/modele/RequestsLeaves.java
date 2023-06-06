@@ -11,8 +11,9 @@ public class RequestsLeaves {
 	private Integer id;
 	private Date depart;
 	private Date retour;
+	private int annee;
 	private int solde;
 	private int statut;
-	private Long conge_id;
-	private Long personnel_id;
+	private int conge_id;
+	private int personnel_id;
 }
