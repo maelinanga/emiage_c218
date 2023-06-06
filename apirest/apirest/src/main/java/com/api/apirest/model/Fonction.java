@@ -19,6 +19,6 @@ public class Fonction {
     private Long id;
 
     @Column(name="fonction")
-    private String fonction;
+    private String fonction; //ETR,CN expert
 
 }

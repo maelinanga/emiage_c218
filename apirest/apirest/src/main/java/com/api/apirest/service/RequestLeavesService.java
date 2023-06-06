@@ -1,8 +1,7 @@
 package com.api.apirest.service;
 
 import java.time.LocalDate;
-import java.util.Date;
-import java.util.List;
+
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,11 +27,14 @@ public class RequestLeavesService {
         return requestsRepository.findByEmployee(employee_id);
     }
 
-    public Iterable <RequestsLeaves> getMyLeavesRequestEncours(final int id, final int statut) {
+    public Iterable <RequestsLeaves> getMyLeavesRequestEncours(final int emp, final int statut) {
     	
-    	return requestsRepository.findByEmployeeAndStatut(id, statut);
+    	return requestsRepository.findByEmployeeAndStatut(emp, statut);
     }
     
+    public Iterable <RequestsLeaves> getMyPendingAnnualRequestsLeaves(final int emp, final int type_conge, final int statut, final int annee){
+    	return requestsRepository.findByEmployeeAndTypecongeAndStatutAndAnnee(emp, type_conge, statut, annee);
+    }
     public Iterable <RequestsLeaves> RequestEncours(final int statut) {
     	
     	return requestsRepository.findByStatut(statut);

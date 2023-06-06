@@ -24,6 +24,9 @@ public class RequestsLeaves {
     @Column(name="date_retour")
     private Date retour;
     
+    @Column(name="annee")
+    private int annee;
+    
     @Column(name="solde")
     private int solde;
     
@@ -39,7 +42,7 @@ public class RequestsLeaves {
     
     //@OneToOne
     @Column(name="conge_id")
-    private int conge_id;
+    private int typeconge;
     
     //@OneToOne
     @Column(name="employee_id")

@@ -1,7 +1,7 @@
 package com.api.apirest.controller;
 
 import java.util.Date;
-import java.util.List;
+
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -72,6 +72,13 @@ public class RequestLeavesController {
 	
 	}
 	
+	@GetMapping("/mesdemandescongesAnnuelsencours/{emp}/{conge}/{statut}/{annee}")
+	public Iterable <RequestsLeaves> getMypenddingsAnnualleaves(@PathVariable("emp") final int emp,@PathVariable("conge") final int conge,
+			@PathVariable("statut") final int statut,@PathVariable("annee") final int annee) {
+		return requestService.getMyPendingAnnualRequestsLeaves(emp,conge,statut,annee);
+	
+	}
+	
 	@GetMapping("/demandesencours/{statut}")
 	public Iterable <RequestsLeaves> getPenddingRequests (@PathVariable("statut")final int statut){
 		
@@ -107,6 +114,11 @@ public class RequestLeavesController {
 				currentrequest.setRetour(retour);
 			}
 			
+			int annee_demande = requestlv.getAnnee();
+			if(annee_demande != 0) {
+				currentrequest.setAnnee(annee_demande);
+			}
+			
 			int solde = requestlv.getSolde();
 			if(solde != 0) {
 				currentrequest.setSolde(solde);
@@ -116,9 +128,9 @@ public class RequestLeavesController {
 			currentrequest.setStatut(statutdemande);
 			
 			
-			int conge_id = requestlv.getConge_id();
+			int conge_id = requestlv.getTypeconge();
 			if(conge_id != 0) {
-				currentrequest.setConge_id(conge_id);
+				currentrequest.setTypeconge(conge_id);
 			}
 			
 			int employee = requestlv.getEmployee();
